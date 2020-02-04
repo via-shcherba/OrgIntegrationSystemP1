@@ -1,0 +1,20 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<ConnectedApp xmlns="http://soap.sforce.com/2006/04/metadata">
+    <contactEmail>viacheslav.shcherba@vrpconsulting.com</contactEmail>
+    <label>ConnectionWithPart2</label>
+    <oauthConfig>
+        <callbackUrl>https://ap15.lightning.force.com/oAuth2/callback</callbackUrl>
+        <consumerKey>3MVG9G9pzCUSkzZs0u0lD3RheLVZVYiaxkMdrW0FBCBGm.Ov4VT1ugA4141bPdmL3MsKfpMdUe5x3Wi7JOeBR</consumerKey>
+        <scopes>Basic</scopes>
+        <scopes>Api</scopes>
+        <scopes>Web</scopes>
+        <scopes>Full</scopes>
+        <scopes>Chatter</scopes>
+        <scopes>CustomApplications</scopes>
+        <scopes>RefreshToken</scopes>
+        <scopes>OpenID</scopes>
+        <scopes>CustomPermissions</scopes>
+        <scopes>Wave</scopes>
+        <scopes>Eclair</scopes>
+    </oauthConfig>
+</ConnectedApp>
