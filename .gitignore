@@ -1,10 +1,10 @@
 # ignored files
 
-*.xml
-*.iml
+#*.xml
+#*.iml
 
 # ignored folders
 
-/.idea
-/IlluminatedCloud
-/*.vscode
+#/.idea
+#/IlluminatedCloud
+#/*.vscode
