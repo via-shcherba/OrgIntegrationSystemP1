@@ -8,28 +8,8 @@ global class IntegrationWebService {
         List<Product2> externalData = (List<Product2>)JSON.deserialize(body.toString(), List<Product2>.class); 
         Map<Id, Product2> ids = new Map<Id, Product2>(externalData);
         
-        List<Product2> existData = new List<Product2>(
-        	[
-                SELECT Id, Name, Description, ExtId__c, Family, ProductCode, IsDeleted, DisplayUrl 
-                FROM Product2 
-                WHERE ExtId__c IN :ids.keySet()
-                OR Id IN :ids.keySet()
-                LIMIT 10000 
-                ALL ROWS
-       		]
-        );
-        
-        Map<Id, Product2> existDataWithoutDublicate = new Map<Id, Product2>();
-        if (!existData.isEmpty()) {
-            for (Product2 product : existData) {
-                if (product.ExtId__c != null) {                   
-                    existDataWithoutDublicate.put(product.ExtId__c, product);
-                } else {
-                    existDataWithoutDublicate.put(product.Id, product);
-                }                
-            }            		                            
-        }
-        
+        Map<Id, Product2> existDataWithoutDublicate = getExistDataWithoutDublicate(ids.keySet());
+
         List<Product2> forDelete = new List<Product2>();
         List<Product2> forInsert = new List<Product2>();
         List<Product2> forUndelete = new List<Product2>();
@@ -82,6 +62,28 @@ global class IntegrationWebService {
             update forUpdate;           	         
         }
                 
+    }
+
+    private static Map<Id, Product2> getExistDataWithoutDublicate(Set<Id> keys) {
+        List<Product2> existData = new List<Product2>([
+                SELECT Id, Name, Description, ExtId__c, Family, ProductCode, IsDeleted, DisplayUrl
+                FROM Product2
+                WHERE ExtId__c IN :keys
+                OR Id IN :keys
+                LIMIT 10000
+                ALL ROWS
+        ]);
+        Map<Id, Product2> existDataWithoutDublicate = new Map<Id, Product2>();
+        if (!existData.isEmpty()) {
+            for (Product2 product : existData) {
+                if (product.ExtId__c != null) {
+                    existDataWithoutDublicate.put(product.ExtId__c, product);
+                } else {
+                    existDataWithoutDublicate.put(product.Id, product);
+                }
+            }
+        }
+        return existDataWithoutDublicate;
     }
        
 }
