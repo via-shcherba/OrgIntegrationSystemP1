@@ -2,7 +2,7 @@
 global class IntegrationWebService {
     
 	@HttpPost
-    global static void readExternalCommands() {
+    global static void getExternalData() {
         RestRequest request = RestContext.request;
         Blob body = request.requestBody;       
         List<Product2> externalData = (List<Product2>)JSON.deserialize(body.toString(), List<Product2>.class); 
@@ -48,18 +48,23 @@ global class IntegrationWebService {
             	}
             }
         }
-        
-        if (!forDelete.isEmpty()) {
-            delete forDelete;        	            
-        }
-        if (!forInsert.isEmpty()) {
-            insert forInsert;           	           
-        }
-        if (!forUndelete.isEmpty()) {
-            undelete forUndelete;        	            
-        }
-        if (!forUpdate.isEmpty()) {
-            update forUpdate;           	         
+
+        try {
+            if (!forDelete.isEmpty()) {
+                delete forDelete;
+            }
+            if (!forInsert.isEmpty()) {
+                insert forInsert;
+            }
+            if (!forUndelete.isEmpty()) {
+                undelete forUndelete;
+            }
+            if (!forUpdate.isEmpty()) {
+                update forUpdate;
+            }
+        } catch (DmlException e) {
+            //ErrorLog error = new ErrorLog(Name = e.getMessage());
+            //insert error;
         }
                 
     }
@@ -76,7 +81,7 @@ global class IntegrationWebService {
         Map<Id, Product2> existDataWithoutDublicate = new Map<Id, Product2>();
         if (!existData.isEmpty()) {
             for (Product2 product : existData) {
-                if (product.ExtId__c != null) {
+                if (String.isNotBlank(product.ExtId__c)) {
                     existDataWithoutDublicate.put(product.ExtId__c, product);
                 } else {
                     existDataWithoutDublicate.put(product.Id, product);

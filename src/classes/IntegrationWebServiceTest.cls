@@ -1,14 +1,12 @@
 @isTest
 private class IntegrationWebServiceTest {
     @testSetup
-    private static void setup() {
+    private static void dataFactory() {
         List<Product2> products = new List<Product2>();
-        Product2 pr1 = new Product2(Name='test1');
-        products.add(pr1);
-        Product2 pr2 = new Product2(Name='test2');
-        products.add(pr2);
-        Product2 pr3 = new Product2(Name='test3');
-        products.add(pr3);
+        for (Integer i = 1; i<= 3; i++) {
+            Product2 pr = new Product2(Name='test' + i);
+            products.add(pr);
+        }
         insert products;
     }
     
@@ -21,9 +19,9 @@ private class IntegrationWebServiceTest {
         String json = '[{"attributes":{"type":"Product2","url":"/services/data/v47.0/sobjects/Product2/01t2v00000Ci4mNAAR"},"Id":"01t2v00000Ci4mNAAR","Name":"Dada","IsDeleted":false,"LastModifiedDate":"2020-02-03T09:36:08.000+0000","CreatedDate":"2020-02-01T15:51:04.000+0000"}]';
         request.requestBody = Blob.valueOf(json);
         RestContext.request = request;
-        
-        IntegrationWebService.readExternalCommands();
-               
+        test.startTest();
+        IntegrationWebService.getExternalData();
+        test.stopTest();
 		Product2 actual = [SELECT id, Name FROM Product2 WHERE Name = 'Dada' LIMIT 1];
 		System.assertEquals('Dada', actual.Name);       
     }
@@ -38,9 +36,9 @@ private class IntegrationWebServiceTest {
         String json = '[{"attributes":{"type":"Product2","url":"/services/data/v47.0/sobjects/Product2/'+existProduct.Id+'"},"Id":"'+existProduct.Id+'","Name":"Test123","IsDeleted":false,"LastModifiedDate":"2020-02-03T09:36:08.000+0000","CreatedDate":"2020-02-01T15:51:04.000+0000"}]';
         request.requestBody = Blob.valueOf(json);
         RestContext.request = request;
-        
-        IntegrationWebService.readExternalCommands();
-               
+        test.startTest();
+        IntegrationWebService.getExternalData();
+        test.stopTest();
 		Product2 actual = [SELECT id, Name FROM Product2 WHERE Name = 'Test123' LIMIT 1];
 		System.assertEquals('Test123', actual.Name);       
     }
@@ -56,7 +54,7 @@ private class IntegrationWebServiceTest {
         request.requestBody = Blob.valueOf(json);
         RestContext.request = request;
         
-        IntegrationWebService.readExternalCommands();
+        IntegrationWebService.getExternalData();
                
 		List<Product2> actual = new List<Product2>([SELECT id, Name FROM Product2 WHERE Name = 'test2' LIMIT 1]);
 		System.assertEquals(0, actual.size());       
@@ -74,7 +72,7 @@ private class IntegrationWebServiceTest {
         request.requestBody = Blob.valueOf(json);
         RestContext.request = request;
         
-        IntegrationWebService.readExternalCommands();
+        IntegrationWebService.getExternalData();
                
 		List<Product2> actual = new List<Product2>([SELECT id, Name FROM Product2 WHERE Name = 'test3' LIMIT 1]);
 		System.assertEquals('test3', actual[0].Name);       

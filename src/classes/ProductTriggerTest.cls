@@ -1,7 +1,7 @@
 @isTest
 private class ProductTriggerTest {
     @testSetup
-    private static void setup() {
+    private static void dataFactory() {
         Org2Data__c data = new Org2Data__c();
         data.password__c = '29051983Slash';
         data.clientId__c = '3MVG9G9pzCUSkzZuZWE2jBYYNYm7LTV1azlORo19Kyyti.In0cJhcb1Rr_2f7mGMxe4TCLYpNFarYKnDJOHTJ';
@@ -27,7 +27,7 @@ private class ProductTriggerTest {
             result = false;
         }
         Test.stopTest();
-        System.assertEquals(true, result);
+        System.assert(result);
     }
     
     @isTest
@@ -35,7 +35,7 @@ private class ProductTriggerTest {
         Product2 newProduct = new Product2();
         newProduct.Name = 'Test';
         insert newProduct;
-        Product2 existProduct = [SELECT Id, Name FROM Product2 LIMIT 1];
+        Product2 existProduct = [SELECT Name FROM Product2 LIMIT 1];
         existProduct.Name = 'Test2';
         Test.startTest();
         Test.setMock(HttpCalloutMock.class, new TokenCalloutMock());
@@ -47,7 +47,7 @@ private class ProductTriggerTest {
             result = false;
         }
         Test.stopTest();
-        System.assertEquals(true, result);
+        System.assert(result);
     }
     
     @isTest
@@ -66,7 +66,7 @@ private class ProductTriggerTest {
             result = false;
         }
         Test.stopTest();
-        System.assertEquals(true, result);
+        System.assert(result);
     }
     
     @isTest
@@ -86,7 +86,7 @@ private class ProductTriggerTest {
             result = false;
         }
         Test.stopTest();
-        System.assertEquals(true, result);
+        System.assert(result);
     }
     
 }

@@ -1,5 +1,5 @@
 global class ScheduledEmail implements Schedulable {
-	global void execute(SchedulableContext sc) {
+	global Messaging.SendEmailResult[] execute(SchedulableContext sc) {
         EmailTemplate template = [SELECT Id FROM EmailTemplate WHERE Name ='RecordCounter'];
         List<String> toAddress = new List<String>();           
         User admin = [SELECT Id, Email FROM User WHERE Profile.Name='System Administrator' LIMIT 1];
@@ -10,7 +10,7 @@ global class ScheduledEmail implements Schedulable {
     		email.setToAddresses(toAddress);
     		email.setTargetObjectId(admin.Id);
     		email.setSaveAsActivity(false);
-    		Messaging.sendEmail(new Messaging.SingleEmailMessage[] {email});
+            return Messaging.sendEmail(new Messaging.SingleEmailMessage[]{email});
         }
     }
 }

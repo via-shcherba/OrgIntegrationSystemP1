@@ -1,13 +1,13 @@
 public class ProductTriggerHelper {
     private Map<Id, Product2> records;
-    private Id syncUserId;
+    private Id syncUserId = null;
     
     public ProductTriggerHelper(Map<Id, Product2> records) {
         this.records = records;
         this.syncUserId = [SELECT Id FROM User WHERE LastName='SynchroElement'].Id;
     }
             
-    public void insertAfter() { 
+    public void afterInsert() {
         if (syncUserId != null) {
         	List<Product2> productsForSend = new List<Product2>();       
         	for (Product2 product : records.values()) {
@@ -17,21 +17,18 @@ public class ProductTriggerHelper {
         	}
         
         	if (!productsForSend.isEmpty()) {
-        		Map<String, List<Product2>> data = new Map<String, List<Product2>>();	
-        		data.put('insert', productsForSend);
-        		String json = JSON.serialize(data);        
-        		WebServiceConnection.sendData(json);
+                sendData('insert', productsForSend);
         	}
         }
     }
     
-    public void updateAfter() {
+    public void afterUpdate() {
         if (syncUserId != null) {
             List<Product2> productsForSend = new List<Product2>();       
             for (Product2 product : records.values()) {
                 if (product.LastModifiedById != syncUserId) {
                     Product2 newProduct = new Product2();
-                    if (product.ExtId__c != null) {
+                    if (String.isNotBlank(product.ExtId__c)) {
                         newProduct.Id = product.ExtId__c;
                     } else {
                         newProduct.Id = product.Id;
@@ -46,16 +43,13 @@ public class ProductTriggerHelper {
                 }                 
             }
             
-            if (!productsForSend.isEmpty()) {                           
-                Map<String, List<Product2>> data = new Map<String, List<Product2>>();
-                data.put('update', productsForSend);
-                String json = JSON.serialize(data);
-                WebServiceConnection.sendData(json);
+            if (!productsForSend.isEmpty()) {
+                sendData('update', productsForSend);
             }
         }
     }
     
-    public void deleteBefore() { 
+    public void beforeDelete() {
         if (syncUserId != null) {
             List<Product2> productsForSend = new List<Product2>();       
             for (Product2 product : records.values()) {
@@ -71,15 +65,12 @@ public class ProductTriggerHelper {
             }
             
             if (!productsForSend.isEmpty()) {
-                Map<String, List<Product2>> data = new Map<String, List<Product2>>();
-                data.put('delete', productsForSend);
-                String json = JSON.serialize(data);
-                WebServiceConnection.sendData(json);
+                sendData('delete', productsForSend);
             }
         }
     }
     
-    public void undeleteAfter() {   
+    public void afterUndelete() {
         if (syncUserId != null) {
             List<Product2> productsForSend = new List<Product2>();       
             for (Product2 product : records.values()) {
@@ -95,11 +86,16 @@ public class ProductTriggerHelper {
             }
             
             if (!productsForSend.isEmpty()) {
-                Map<String, List<Product2>> data = new Map<String, List<Product2>>();
-                data.put('undelete', productsForSend);
-                String json = JSON.serialize(data);
-                WebServiceConnection.sendData(json);
+                sendData('undelete', productsForSend);
             }
         }
     }
+
+    private void sendData(String flag, List<Product2> data) {
+        Map<String, List<Product2>> dataForSend = new Map<String, List<Product2>>();
+        dataForSend.put(flag, data);
+        String json = JSON.serialize(data);
+        WebServiceConnection.sendData(json);
+    }
+
 }

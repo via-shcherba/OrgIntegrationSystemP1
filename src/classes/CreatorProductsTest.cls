@@ -1,7 +1,7 @@
 @isTest
 private class CreatorProductsTest {
 	@isTest
-    private static void batchTest() {
+    private static void executeBatchTest() {
         Test.startTest();
 		Database.executeBatch(new CreatorProducts(200));     
         Integer actual = [SELECT COUNT() FROM Product2];
