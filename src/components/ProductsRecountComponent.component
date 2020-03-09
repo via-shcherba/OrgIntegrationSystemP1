@@ -1,5 +1,5 @@
 <apex:component controller="ProductsRecountController" access="global">   
-	Hello, Boss!    
-    Object Product2 has {!numberRecords} records!   
-    Till tomorrow! 
+	{$Label.hello}!
+    {$Label.objectHas} {!numberRecords} {$Label.records}!
+    {$Label.tomorrow}
 </apex:component>

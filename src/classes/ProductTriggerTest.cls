@@ -18,16 +18,9 @@ private class ProductTriggerTest {
         Product2 newProduct = new Product2();
         newProduct.Name = 'Test';
         Test.startTest();
-        Test.setMock(HttpCalloutMock.class, new TokenCalloutMock());        
-        Boolean result = false;
-        try {
-            insert newProduct;
-            result = true;
-        } catch (Exception e) {
-            result = false;
-        }
+        Test.setMock(HttpCalloutMock.class, new TokenCalloutMock());
+        insert newProduct;
         Test.stopTest();
-        System.assert(result);
     }
     
     @isTest
@@ -39,15 +32,8 @@ private class ProductTriggerTest {
         existProduct.Name = 'Test2';
         Test.startTest();
         Test.setMock(HttpCalloutMock.class, new TokenCalloutMock());
-        Boolean result = false;
-        try {
-            update existProduct;
-            result = true;
-        } catch (Exception e) {
-            result = false;
-        }
+        update existProduct;
         Test.stopTest();
-        System.assert(result);
     }
     
     @isTest
@@ -57,16 +43,9 @@ private class ProductTriggerTest {
         insert newProduct;
         Product2 existProduct = [SELECT Id, Name FROM Product2 LIMIT 1];        
         Test.startTest();
-        Boolean result = false;
         Test.setMock(HttpCalloutMock.class, new TokenCalloutMock());
-        try {
-            delete existProduct;
-            result = true;
-        } catch (Exception e) {
-            result = false;
-        }
+        delete existProduct;
         Test.stopTest();
-        System.assert(result);
     }
     
     @isTest
@@ -78,15 +57,8 @@ private class ProductTriggerTest {
         delete existProduct;
         Test.startTest();
         Test.setMock(HttpCalloutMock.class, new TokenCalloutMock());
-        Boolean result = false;
-        try {
-            undelete existProduct;
-            result = true;
-        } catch (Exception e) {
-            result = false;
-        }
+        undelete existProduct;
         Test.stopTest();
-        System.assert(result);
     }
     
 }

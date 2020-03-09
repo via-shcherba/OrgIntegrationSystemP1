@@ -6,7 +6,7 @@ private class CreatorProductsTest {
 		Database.executeBatch(new CreatorProducts(200));     
         Integer actual = [SELECT COUNT() FROM Product2];
         Test.stopTest();        
-        System.assertEquals(200, actual);
+        System.Assert(actual == 200);
     }
     
 }

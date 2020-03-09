@@ -6,10 +6,8 @@ global class IntegrationWebService {
         RestRequest request = RestContext.request;
         Blob body = request.requestBody;       
         List<Product2> externalData = (List<Product2>)JSON.deserialize(body.toString(), List<Product2>.class); 
-        Map<Id, Product2> ids = new Map<Id, Product2>(externalData);
-        
-        Map<Id, Product2> existDataWithoutDublicate = getExistDataWithoutDublicate(ids.keySet());
-
+        Map<Id, Product2> products = new Map<Id, Product2>(externalData);
+        Map<Id, Product2> existDataWithoutDublicate = getExistDataWithoutDublicate(products.keySet());
         List<Product2> forDelete = new List<Product2>();
         List<Product2> forInsert = new List<Product2>();
         List<Product2> forUndelete = new List<Product2>();
@@ -63,8 +61,8 @@ global class IntegrationWebService {
                 update forUpdate;
             }
         } catch (DmlException e) {
-            //ErrorLog error = new ErrorLog(Name = e.getMessage());
-            //insert error;
+            ErrorLog__c error = new ErrorLog__c(Name = (String)e.getMessage());
+            insert error;
         }
                 
     }
@@ -79,13 +77,11 @@ global class IntegrationWebService {
                 ALL ROWS
         ]);
         Map<Id, Product2> existDataWithoutDublicate = new Map<Id, Product2>();
-        if (!existData.isEmpty()) {
-            for (Product2 product : existData) {
-                if (String.isNotBlank(product.ExtId__c)) {
-                    existDataWithoutDublicate.put(product.ExtId__c, product);
-                } else {
-                    existDataWithoutDublicate.put(product.Id, product);
-                }
+        for (Product2 product : existData) {
+            if (String.isNotBlank(product.ExtId__c)) {
+                existDataWithoutDublicate.put(product.ExtId__c, product);
+            } else {
+                existDataWithoutDublicate.put(product.Id, product);
             }
         }
         return existDataWithoutDublicate;
